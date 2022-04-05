@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'meme_generator_page.dart';
+import 'random_meme_generator_page.dart';
+
 class IntroPage extends StatefulWidget {
   const IntroPage({Key? key}) : super(key: key);
 
@@ -10,6 +13,13 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   int _selectedIndex = 0;
   bool isDarkModeEnabled = false;
+  late PageController _intoPageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _intoPageController = PageController(initialPage: 0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,21 +28,30 @@ class _IntroPageState extends State<IntroPage> {
         title: const Text('Intro Page'),
       ),
       drawer: _buildDrawer(),
-      body: const Center(
-        child: Text('This is a intro page of the application'),
-      ),
+      body: _buildBody(),
       bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  _buildBody() {
+    return PageView(
+      controller: _intoPageController,
+      physics: const NeverScrollableScrollPhysics(),
+      children: const <Widget>[MemeGeneratorPage(), RandomMemeGeneratorPage()],
     );
   }
 
   _buildBottomNavigationBar() {
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       items: const [
         BottomNavigationBarItem(
             icon: Icon(Icons.design_services), label: 'Generate'),
         BottomNavigationBarItem(icon: Icon(Icons.autorenew), label: 'Random'),
       ],
       currentIndex: _selectedIndex,
+      selectedItemColor: Theme.of(context).colorScheme.secondary,
+      unselectedItemColor: Colors.blueGrey,
       onTap: _onTapped,
     );
   }
@@ -89,6 +108,8 @@ class _IntroPageState extends State<IntroPage> {
     setState(() {
       _selectedIndex = currIndex;
     });
+
+    _intoPageController.jumpToPage(currIndex);
   }
 
   _onThemeChanged(bool newValue) {
