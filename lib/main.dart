@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_meme/injection/injection_container.dart' as di;
 import 'package:get_meme/presentation_layer/intro_page.dart';
 
-void main() {
+void main() async {
+  await di.init();
   runApp(const MyApp());
 }
 
