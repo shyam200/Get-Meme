@@ -14,5 +14,15 @@ class RandomMemeListLoadedState extends RandomMemeState {
 
   RandomMemeListLoadedState({required this.memeDataItem});
   @override
+  List<Object?> get props => [memeDataItem];
+}
+
+class ShareRandomMemeState extends RandomMemeState {
+  @override
+  List<Object?> get props => [];
+}
+
+class AddToFavouriteMemeState extends RandomMemeState {
+  @override
   List<Object?> get props => [];
 }
