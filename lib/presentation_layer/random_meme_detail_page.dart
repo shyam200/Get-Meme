@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_meme/business_layer/bloc/random_meme_bloc/random_meme_event.dart';
 
 import '../business_layer/bloc/random_meme_bloc/random_meme_bloc.dart';
+import '../business_layer/bloc/random_meme_bloc/random_meme_event.dart';
 import '../business_layer/bloc/random_meme_bloc/random_meme_state.dart';
 import '../injection/injection_container.dart';
 
@@ -58,7 +58,7 @@ class _RandomMemeDetailPageState extends State<RandomMemeDetailPage> {
 
   _buildButtons() => [
         TextButton(
-          onPressed: () {},
+          onPressed: _onAddToFavouriteButtonPressed,
           child: const Icon(
             Icons.favorite_outline_outlined,
             color: Colors.white,
@@ -79,5 +79,9 @@ class _RandomMemeDetailPageState extends State<RandomMemeDetailPage> {
 
   _onShareButtonPressed() {
     _bloc.add(ShareRandomMemeEvent(imgUrl: widget.imageUrl));
+  }
+
+  _onAddToFavouriteButtonPressed() {
+    _bloc.add(AddToFavouriteMemeEvent());
   }
 }

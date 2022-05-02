@@ -37,7 +37,10 @@ class _IntroPageState extends State<IntroPage> {
     return PageView(
       controller: _intoPageController,
       physics: const NeverScrollableScrollPhysics(),
-      children: const <Widget>[MemeGeneratorPage(), RandomMemeGeneratorPage()],
+      children: const <Widget>[
+        MemeGeneratorPage(),
+        RandomMemeGeneratorPage(),
+      ],
     );
   }
 

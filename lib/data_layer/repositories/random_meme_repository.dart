@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:get_meme/data_layer/models/share_image_model.dart';
 
 import '../data_providers/random_meme_data_provider.dart';
+import '../models/meme_image_generator_model.dart';
 import '../models/random_meme_model.dart';
+import '../models/share_image_model.dart';
 
 class RandomMememRepository {
   final RandomMemeDataAPI randomMemeDataAPI;
@@ -21,5 +20,13 @@ class RandomMememRepository {
   Future<ShareImageModel> getMemeImage(imageUrl) async {
     final imageData = await randomMemeDataAPI.getImageData(imageUrl);
     return ShareImageModel.fromUint8List(imageData);
+  }
+
+  Future<MemeImageGeneratorModel> getMemeGeneratorImageList() async {
+    final dynamic memeImages =
+        await randomMemeDataAPI.getMemeGeneratorImageList();
+    final MemeImageGeneratorModel memeImageList =
+        MemeImageGeneratorModel.fromJson(json.decode(memeImages));
+    return memeImageList;
   }
 }

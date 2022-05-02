@@ -19,4 +19,13 @@ class RandomMemeDataAPI {
     final response = await client.get(url);
     return response.bodyBytes;
   }
+
+  Future<String> getMemeGeneratorImageList() async {
+    NetworkConstants networkConstants = di<NetworkConstants>();
+    Uri url = Uri.parse(
+        networkConstants.baseUrl + networkConstants.memeGeneratorImageUrl);
+
+    final response = await client.get(url);
+    return response.body;
+  }
 }

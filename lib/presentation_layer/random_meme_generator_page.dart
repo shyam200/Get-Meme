@@ -67,34 +67,6 @@ class _RandomMemeGeneratorPageState extends State<RandomMemeGeneratorPage> {
                               )
                             : Container();
                       })),
-          // GridView.builder(
-          //     gridDelegate:
-          //         const SliverGridDelegateWithFixedCrossAxisCount(
-          //       crossAxisCount: 2,
-          //       crossAxisSpacing: 10.0,
-          //       mainAxisSpacing: 10.0,
-          //     ),
-          //     itemCount: 10,
-          //     itemBuilder: (context, index) {
-          //       return InkWell(
-          //         child: Image.network(
-          //           _memeItem!.imageUrl,
-          //           height: 250,
-          //           width: 200,
-          //         ),
-
-          //         // Column(
-          //         //   children: [
-          //         //     Text(_memeItem?.title ?? ''),
-          //         //     ],
-          //         // ),
-          //         onTap: () {
-          //           Navigator.of(context).push(MaterialPageRoute(
-          //               builder: (_) => const RandomMemeDetailPage()));
-          //         },
-          //       );
-          //     }),
-          // ),
         );
       },
     );

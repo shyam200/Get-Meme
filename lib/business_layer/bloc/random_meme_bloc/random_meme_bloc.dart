@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_meme/data_layer/models/share_image_model.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../../data_layer/models/share_image_model.dart';
 import '../../../data_layer/repositories/random_meme_repository.dart';
 import 'random_meme_event.dart';
 import 'random_meme_state.dart';
@@ -23,6 +24,8 @@ class RandomMemeBloc extends Bloc<RandomMemeEvent, RandomMemeState> {
       yield* getRandomMemeList();
     } else if (event is ShareRandomMemeEvent) {
       saveAndShareMeme(event.imgUrl);
+    } else if (event is AddToFavouriteMemeEvent) {
+      addToFavouriteMeme();
     }
   }
 
@@ -60,5 +63,9 @@ class RandomMemeBloc extends Bloc<RandomMemeEvent, RandomMemeState> {
     final file = File(path);
     file.createSync();
     return file;
+  }
+
+  addToFavouriteMeme() {
+    print('Adding to favourite..........');
   }
 }
