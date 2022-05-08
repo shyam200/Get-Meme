@@ -1,5 +1,7 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_meme/presentation_layer/meme_generator_detail_page.dart';
 
 import '../business_layer/bloc/meme_generator_bloc/meme_generator_bloc.dart';
 import '../business_layer/bloc/meme_generator_bloc/meme_generator_event.dart';
@@ -43,14 +45,26 @@ class _MemeGeneratorPageState extends State<MemeGeneratorPage> {
                     itemCount: _imageList.length,
                     itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-                          child: Image.network(
-                            _imageList[index].imageUrl,
-                            fit: BoxFit.contain,
-                            key: Key(_imageList[index].id),
-                            errorBuilder: (context, obj, stackTrace) {
-                              print('$stackTrace');
-                              return Text('$stackTrace');
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => MemeGeneratorDetailPage(
+                                            imgUrl: _imageList[index].imageUrl,
+                                          )));
                             },
+                            child: ExtendedImage.network(
+                              _imageList[index].imageUrl,
+                              fit: BoxFit.contain,
+                              //  repeat: ImageRepeat.noRepeat,
+                              key: Key(_imageList[index].id +
+                                  UniqueKey().toString()),
+                              // errorBuilder: (context, obj, stackTrace) {
+                              //   print('$stackTrace');
+                              //   return Text('$stackTrace');
+                              // },
+                            ),
                           ),
                         )),
               );

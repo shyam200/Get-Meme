@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as client;
 
 import '../../injection/injection_container.dart';
@@ -20,12 +21,13 @@ class RandomMemeDataAPI {
     return response.bodyBytes;
   }
 
-  Future<String> getMemeGeneratorImageList() async {
+  Future<Map<String, dynamic>> getMemeGeneratorImageList() async {
     NetworkConstants networkConstants = di<NetworkConstants>();
     Uri url = Uri.parse(
         networkConstants.baseUrl + networkConstants.memeGeneratorImageUrl);
 
-    final response = await client.get(url);
-    return response.body;
+    final response = await di<Dio>().get(url.toString());
+    // client.get(url);
+    return response.data;
   }
 }

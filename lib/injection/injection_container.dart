@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 import '../business_layer/bloc/meme_generator_bloc/meme_generator_bloc.dart';
@@ -26,4 +27,7 @@ Future<void> init() async {
 
   //! DataProviders
   di.registerFactory<RandomMemeDataAPI>(() => RandomMemeDataAPI());
+
+  //! Utils
+  di.registerLazySingleton<Dio>(() => Dio());
 }

@@ -23,10 +23,9 @@ class RandomMememRepository {
   }
 
   Future<MemeImageGeneratorModel> getMemeGeneratorImageList() async {
-    final dynamic memeImages =
-        await randomMemeDataAPI.getMemeGeneratorImageList();
+    final memeImages = await randomMemeDataAPI.getMemeGeneratorImageList();
     final MemeImageGeneratorModel memeImageList =
-        MemeImageGeneratorModel.fromJson(json.decode(memeImages));
+        MemeImageGeneratorModel.fromJson(memeImages);
     return memeImageList;
   }
 }
