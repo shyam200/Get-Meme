@@ -21,7 +21,13 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   double? textFieldHeight = 0.0;
   bool _isTextDropped = false;
   final TextEditingController _textFieldOneController = TextEditingController();
-
+  final double _baseFactor = 0.5;
+  final double _scaleFactor = 0.5;
+  final double _positionX = 30.0;
+  double dx = 20.0;
+  double dy = 20.0;
+  final _bottomContainer = GlobalKey();
+  late Offset offset; // = Offset.zero;
   @override
   void initState() {
     super.initState();
@@ -29,6 +35,8 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       textFieldHeight = _textFieldKey.currentContext?.size?.height;
     });
+
+    offset = Offset(dx, dy);
   }
 
   @override
@@ -76,7 +84,8 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
             _isTextDropped = true;
           });
         },
-        builder: (context, accepted, rejected) => Stack(children: [
+        builder: (context, accepted, rejected) =>
+            Stack(fit: StackFit.expand, children: [
           Image.network(
             widget.imgUrl,
             fit: BoxFit.fill,
@@ -91,16 +100,33 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
               ));
             },
           ),
-          Text(
-            _isTextDropped
-                ? _textFieldOneController.text.isNotEmpty
-                    ? _textFieldOneController.text
-                    : ''
-                : '',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
+          Positioned(
+            left: offset.dx, // dx,
+            top: offset.dy, // dy,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  offset = Offset(offset.dx + details.delta.dx,
+                      offset.dy + details.delta.dy);
+                });
+              },
+              child: Transform.scale(
+                alignment: Alignment.topLeft,
+                scaleX: _scaleFactor,
+                // scale: _scaleFactor,
+                child: Text(
+                  _isTextDropped
+                      ? _textFieldOneController.text.isNotEmpty
+                          ? _textFieldOneController.text
+                          : ''
+                      : '',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 40.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           )
           // Text(_isTextDropped ? 'Dropped' : ''),
@@ -109,6 +135,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
 
   _buildBottomTextFields() {
     return Padding(
+      key: _bottomContainer,
       padding: const EdgeInsets.all(8.0),
       child: Column(children: [
         Draggable(
@@ -123,7 +150,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
                 ))),
           ),
           data: 'headline',
-          feedback: const Text('Lets drop :)'),
+          feedback: Text(_textFieldOneController.text),
           childWhenDragging: Container(),
         ),
         const SizedBox(
