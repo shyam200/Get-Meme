@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../data_layer/models/random_meme_model.dart';
+import '../../../data_layer/models/random_meme_generator_model/random_meme_model.dart';
 
 abstract class RandomMemeState extends Equatable {}
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../business_layer/bloc/meme_generator_bloc/meme_generator_bloc.dart';
-import '../business_layer/bloc/meme_generator_bloc/meme_generator_state.dart';
-import '../injection/injection_container.dart';
+import '../../business_layer/bloc/meme_generator_bloc/meme_generator_bloc.dart';
+import '../../business_layer/bloc/meme_generator_bloc/meme_generator_state.dart';
+import '../../injection/injection_container.dart';
 
 class MemeGeneratorDetailPage extends StatefulWidget {
   final String imgUrl;

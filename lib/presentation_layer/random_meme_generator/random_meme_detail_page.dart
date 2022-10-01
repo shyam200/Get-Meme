@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../business_layer/bloc/random_meme_bloc/random_meme_bloc.dart';
-import '../business_layer/bloc/random_meme_bloc/random_meme_event.dart';
-import '../business_layer/bloc/random_meme_bloc/random_meme_state.dart';
-import '../injection/injection_container.dart';
+import '../../business_layer/bloc/random_meme_bloc/random_meme_bloc.dart';
+import '../../business_layer/bloc/random_meme_bloc/random_meme_event.dart';
+import '../../business_layer/bloc/random_meme_bloc/random_meme_state.dart';
+import '../../injection/injection_container.dart';
 
 class RandomMemeDetailPage extends StatefulWidget {
   final String title;

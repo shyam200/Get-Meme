@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +36,7 @@ class RandomMemeBloc extends Bloc<RandomMemeEvent, RandomMemeState> {
       final result = await randomMememRepository.getRandomMemeList();
       yield RandomMemeListLoadedState(memeDataItem: result);
     } catch (e) {
-      print('error fetching data:- $e');
+      log('error fetching data:- $e');
     }
   }
 
@@ -66,6 +67,7 @@ class RandomMemeBloc extends Bloc<RandomMemeEvent, RandomMemeState> {
   }
 
   addToFavouriteMeme() {
-    print('Adding to favourite..........');
+    log('Adding to favourite..........');
+    // print('Adding to favourite..........');
   }
 }

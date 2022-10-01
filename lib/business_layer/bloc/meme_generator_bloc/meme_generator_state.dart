@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../data_layer/models/meme_image_generator_model.dart';
+import '../../../data_layer/models/meme_generator_model/meme_image_generator_model.dart';
 
 ///This class emits different types of [states] for meme generator Image [from bloc]
 

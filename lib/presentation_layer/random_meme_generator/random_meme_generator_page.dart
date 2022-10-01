@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../business_layer/bloc/random_meme_bloc/random_meme_bloc.dart';
-import '../business_layer/bloc/random_meme_bloc/random_meme_event.dart';
-import '../business_layer/bloc/random_meme_bloc/random_meme_state.dart';
-import '../data_layer/models/random_meme_items_model.dart';
-import '../injection/injection_container.dart';
+import '../../business_layer/bloc/random_meme_bloc/random_meme_bloc.dart';
+import '../../business_layer/bloc/random_meme_bloc/random_meme_event.dart';
+import '../../business_layer/bloc/random_meme_bloc/random_meme_state.dart';
+import '../../data_layer/models/random_meme_generator_model/random_meme_items_model.dart';
+import '../../injection/injection_container.dart';
 import 'random_meme_detail_page.dart';
 
 class RandomMemeGeneratorPage extends StatefulWidget {

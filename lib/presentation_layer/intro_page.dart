@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'meme_generator_page.dart';
-import 'random_meme_generator_page.dart';
+import 'meme_generator/meme_generator_page.dart';
+import 'random_meme_generator/random_meme_generator_page.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({Key? key}) : super(key: key);
@@ -21,7 +21,6 @@ class _IntroPageState extends State<IntroPage> {
     _intoPageController = PageController(initialPage: 0);
   }
 
-//////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
