@@ -21,6 +21,7 @@ class _IntroPageState extends State<IntroPage> {
     _intoPageController = PageController(initialPage: 0);
   }
 
+//////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(

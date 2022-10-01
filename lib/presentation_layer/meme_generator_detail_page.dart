@@ -32,7 +32,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   void initState() {
     super.initState();
     _bloc = di<MemeGeneratorBloc>();
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       textFieldHeight = _textFieldKey.currentContext?.size?.height;
     });
 
