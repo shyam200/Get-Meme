@@ -14,3 +14,10 @@ class MemeGeneratorGetImageListEvent extends MemeGeneratorEvent {
   @override
   List<Object?> get props => [];
 }
+
+class MemeGeneratorSaveImageEvent extends MemeGeneratorEvent {
+  MemeGeneratorSaveImageEvent();
+
+  @override
+  List<Object?> get props => [];
+}

@@ -25,7 +25,7 @@ class _IntroPageState extends State<IntroPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Intro Page'),
+        title: const Text('Meme App'),
       ),
       drawer: _buildDrawer(),
       body: _buildBody(),
@@ -45,17 +45,27 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      items: const [
-        BottomNavigationBarItem(
-            icon: Icon(Icons.design_services), label: 'Generate'),
-        BottomNavigationBarItem(icon: Icon(Icons.autorenew), label: 'Random'),
-      ],
-      currentIndex: _selectedIndex,
-      selectedItemColor: Theme.of(context).colorScheme.secondary,
-      unselectedItemColor: Colors.blueGrey,
-      onTap: _onTapped,
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white70,
+          border: Border.all(width: 0.5, color: Colors.grey)),
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+              tooltip: 'Generate your own meme',
+              icon: Icon(Icons.design_services),
+              label: 'Generate meme'),
+          BottomNavigationBarItem(
+              tooltip: 'Choose a random meme',
+              icon: Icon(Icons.autorenew),
+              label: 'Random meme'),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Theme.of(context).colorScheme.secondary,
+        unselectedItemColor: Colors.blueGrey,
+        onTap: _onTapped,
+      ),
     );
   }
 

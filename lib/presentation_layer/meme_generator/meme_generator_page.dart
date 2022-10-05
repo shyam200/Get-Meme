@@ -52,6 +52,7 @@ class _MemeGeneratorPageState extends State<MemeGeneratorPage> {
                                   MaterialPageRoute(
                                       builder: (_) => MemeGeneratorDetailPage(
                                             imgUrl: _imageList[index].imageUrl,
+                                            bloc: _bloc,
                                           )));
                             },
                             child: ExtendedImage.network(

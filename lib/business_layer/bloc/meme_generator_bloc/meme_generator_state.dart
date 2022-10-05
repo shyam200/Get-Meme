@@ -17,3 +17,8 @@ class MemeGeneratorListLoadedState extends MemeGeneratorState {
   @override
   List<Object?> get props => [imageList];
 }
+
+class MemeGeneratorImageSavedSucessState extends MemeGeneratorState {
+  @override
+  List<Object?> get props => [];
+}

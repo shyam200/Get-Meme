@@ -17,6 +17,8 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
       yield MemeGeneratorLoadingState();
     } else if (event is MemeGeneratorGetImageListEvent) {
       yield* _getImageDataList();
+    } else if (event is MemeGeneratorSaveImageEvent) {
+      yield* _saveImageToGallary();
     }
   }
   //   on<MemeGeneratorEvent>((event, emit) async {
@@ -36,5 +38,10 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
     } catch (e) {
       log('unable to fetch data:- $e');
     }
+  }
+
+  Stream<MemeGeneratorState> _saveImageToGallary() async* {
+    log('saved....');
+    yield MemeGeneratorImageSavedSucessState();
   }
 }
