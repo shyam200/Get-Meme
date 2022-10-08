@@ -292,11 +292,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   }
 
   _onMemeSave() {
-    // widget.bloc.add(MemeGeneratorSaveImageEvent());
-    _showInstructionGuideDialog();
-    // _showPermissionAccessDialog();
-    // _showSuccessDialog();
-    // _showTechnicalErrorDialog();
+    widget.bloc.add(MemeGeneratorSaveImageEvent());
   }
 
   ///Method to take screenShot of the image from till the boundary
