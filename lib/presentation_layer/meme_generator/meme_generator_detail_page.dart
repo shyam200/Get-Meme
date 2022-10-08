@@ -1,9 +1,16 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../business_layer/bloc/meme_generator_bloc/meme_generator_bloc.dart';
 import '../../business_layer/bloc/meme_generator_bloc/meme_generator_event.dart';
 import '../../business_layer/bloc/meme_generator_bloc/meme_generator_state.dart';
+import '../../core/external/meme_common_dialog.dart';
+import '../../resources/styles/text_styles.dart';
 
 class MemeGeneratorDetailPage extends StatefulWidget {
   final String imgUrl;
@@ -19,6 +26,7 @@ class MemeGeneratorDetailPage extends StatefulWidget {
 
 class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   final _textFieldKey = GlobalKey();
+  final headerImageKey = GlobalKey();
   double? textFieldHeight = 0.0;
   bool _isTextDropped = false;
   final TextEditingController _textFieldOneController = TextEditingController();
@@ -32,6 +40,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   late Offset headlineOffset; // = Offset.zero;
   late Offset descriptionOffset;
   bool _isBlackColor = false;
+  // late final ui.Image _clippedImage;
 
   @override
   void initState() {
@@ -48,9 +57,19 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<MemeGeneratorBloc, MemeGeneratorState>(
       bloc: widget.bloc, //_bloc,
-      listener: (context, state) {
-        if (state is MemeGeneratorImageSavedSucessState) {
+      listener: (context, state) async {
+        if (state is PermissionTemporarilyDenied) {
           //Show the response to user with dialog that image is saved successfully!
+        } else if (state is PermissionPermanentlyDenied ||
+            state is PermissionTemporarilyDenied) {
+          //let the user know that he has denied the permission and he/she needs to give the aceess
+          _showPermissionAccessDialog();
+        } else if (state is PermissionGrantedState) {
+          final _clippedImage = await _takeHeaderImageScreenShot();
+          //save the image to gallery
+          widget.bloc.add(PermissionGrantedEvent(image: _clippedImage));
+        } else if (state is MemeGeneratorImageSavedSucessState) {
+          _showSuccessDialog();
         }
       },
       // height: MediaQuery.of(context).size.height -
@@ -61,33 +80,43 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
           appBar: AppBar(
             title: const Text('Create meme'),
             actions: [
-              IconButton(onPressed: _onMemeSave, icon: Icon(Icons.save)),
+              IconButton(onPressed: _onMemeSave, icon: const Icon(Icons.save)),
             ],
           ),
-          body: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-            child: SingleChildScrollView(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildHeaderImage(),
-                    // const Spacer(),
-                    const SizedBox(height: 30),
-                    _buildBottomTextFields(),
-
-                    Row(
+          body: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 20.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(left: 5.0),
-                          child: Text('Wanna change text color to black ?'),
-                        ),
-                        const Spacer(),
-                        _buildColorToggle(),
-                      ],
+                        _buildHeaderImage(),
+                        // const Spacer(),
+                        const SizedBox(height: 30),
+                        _buildBottomTextFields(),
+
+                        Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 5.0),
+                              child: Text('Wanna change text color to black ?'),
+                            ),
+                            const Spacer(),
+                            _buildColorToggle(),
+                          ],
+                        )
+                      ]),
+                ),
+              ),
+              state is MemeGeneratorLoadingState
+                  ? Container(
+                      color: Colors.white70,
+                      child: const Center(child: CircularProgressIndicator()),
                     )
-                  ]),
-            ),
+                  : Container()
+            ],
           ),
         );
       },
@@ -104,22 +133,25 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
     });
   }
 
-  _buildHeaderImage() => SizedBox(
-      height: 400,
-      child: DragTarget(
-        onWillAccept: (data) => data == 'Label 1' || data == 'Label 2',
-        onAccept: (data) {
-          setState(() {
-            _isTextDropped = true;
-          });
-        },
-        builder: (context, accepted, rejected) =>
-            Stack(fit: StackFit.expand, children: [
-          _buildImage(),
-          _buildLabelTwo(),
-          _buildLabelOne(),
-        ]),
-      ));
+  _buildHeaderImage() => RepaintBoundary(
+        key: headerImageKey,
+        child: SizedBox(
+            height: 400,
+            child: DragTarget(
+              onWillAccept: (data) => data == 'Label 1' || data == 'Label 2',
+              onAccept: (data) {
+                setState(() {
+                  _isTextDropped = true;
+                });
+              },
+              builder: (context, accepted, rejected) =>
+                  Stack(fit: StackFit.expand, children: [
+                _buildImage(),
+                _buildLabelTwo(),
+                _buildLabelOne(),
+              ]),
+            )),
+      );
 
   Image _buildImage() {
     return Image.network(
@@ -257,6 +289,60 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   }
 
   _onMemeSave() {
-    widget.bloc.add(MemeGeneratorSaveImageEvent());
+    //widget.bloc.add(MemeGeneratorSaveImageEvent());
+    _showSuccessDialog();
+  }
+
+  ///Method to take screenShot of the image from till the boundary
+  Future<ui.Image> _takeHeaderImageScreenShot() async {
+    RenderRepaintBoundary boundary = headerImageKey.currentContext
+        ?.findRenderObject() as RenderRepaintBoundary;
+    ui.Image headerImage = await boundary.toImage();
+    return headerImage;
+  }
+
+  _showPermissionAccessDialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return MemeDialog(
+            title: 'Error',
+            content: Column(
+              children: [
+                Platform.isAndroid
+                    ? const Text(
+                        'Please allow storage permission from settings',
+                        style: TextStyles.memeDialogText,
+                      )
+                    : const Text(
+                        'Please allow photos permission from settings',
+                        style: TextStyles.memeDialogText,
+                      ),
+              ],
+            ),
+            positiveButtonContent: 'Ok',
+            positiveFuntion: () {
+              openAppSettings();
+            },
+          );
+        });
+  }
+
+  _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return const MemeDialog(
+          content: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Saved sucessfully!',
+              style: TextStyles.memeDialogText,
+            ),
+          ),
+          negativeButtonContent: 'Ok',
+        );
+      },
+    );
   }
 }

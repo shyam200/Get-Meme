@@ -22,6 +22,7 @@ dependencies:
   dio: ^4.0.6
   extended_image: ^4.0.0
   permission_handler: ^9.2.0
+  image_gallery_saver: ^1.7.1
 
 dev_dependencies:
   flutter_test:

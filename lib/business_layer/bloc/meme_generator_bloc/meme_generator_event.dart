@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:equatable/equatable.dart';
 
 ///This class emits different types of events for [meme generator] that will [dispatch from UI]
@@ -20,4 +22,12 @@ class MemeGeneratorSaveImageEvent extends MemeGeneratorEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+class PermissionGrantedEvent extends MemeGeneratorEvent {
+  final Image image;
+  PermissionGrantedEvent({required this.image});
+
+  @override
+  List<Object?> get props => [image];
 }

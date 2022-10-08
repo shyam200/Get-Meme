@@ -22,3 +22,18 @@ class MemeGeneratorImageSavedSucessState extends MemeGeneratorState {
   @override
   List<Object?> get props => [];
 }
+
+class PermissionTemporarilyDenied extends MemeGeneratorState {
+  @override
+  List<Object?> get props => [];
+}
+
+class PermissionPermanentlyDenied extends MemeGeneratorState {
+  @override
+  List<Object?> get props => [];
+}
+
+class PermissionGrantedState extends MemeGeneratorState {
+  @override
+  List<Object?> get props => [];
+}
