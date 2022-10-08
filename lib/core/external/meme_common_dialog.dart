@@ -31,37 +31,38 @@ class _MemeDialogState extends State<MemeDialog> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 280),
-          child: Material(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                //Title of the dialog
-                if (widget.title != null && widget.title!.isNotEmpty)
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10.0, top: 8.0),
-                      child: Text(
-                        widget.title!,
-                        textAlign: TextAlign.left,
-                        style: TextStyles.memeDialogHeadline,
-                      ),
+        child: Material(
+          elevation: 24.0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              //Title of the dialog
+              if (widget.title != null && widget.title!.isNotEmpty)
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10.0, top: 8.0),
+                    child: Text(
+                      widget.title!,
+                      textAlign: TextAlign.left,
+                      style: TextStyles.memeDialogHeadline,
                     ),
                   ),
-                //widget draws as content of the dialog
-                Padding(
+                ),
+              //widget draws as content of the dialog
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10.0, vertical: 8.0),
                   child: widget.content,
                 ),
+              ),
 
-                //Bottom Buttons
-                _buildBottomBar(context)
-              ],
-            ),
+              //Bottom Buttons
+              _buildBottomBar(context)
+            ],
           ),
         ),
       ),

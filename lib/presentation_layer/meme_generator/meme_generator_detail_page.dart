@@ -292,7 +292,11 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   }
 
   _onMemeSave() {
-    widget.bloc.add(MemeGeneratorSaveImageEvent());
+    // widget.bloc.add(MemeGeneratorSaveImageEvent());
+    _showInstructionGuideDialog();
+    // _showPermissionAccessDialog();
+    // _showSuccessDialog();
+    // _showTechnicalErrorDialog();
   }
 
   ///Method to take screenShot of the image from till the boundary
@@ -303,6 +307,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
     return headerImage;
   }
 
+  ///show [permission] access error dialog
   _showPermissionAccessDialog() {
     showDialog(
         context: context,
@@ -330,6 +335,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
         });
   }
 
+  ///show meme saved [confirmation] dialog
   _showSuccessDialog() {
     showDialog(
       context: context,
@@ -348,6 +354,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
     );
   }
 
+  ///show [technical error] dialog
   _showTechnicalErrorDialog() {
     showDialog(
         context: context,
@@ -359,6 +366,22 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
             ),
             title: 'Technical Error',
             negativeButtonContent: 'Ok',
+          );
+        });
+  }
+
+  ///show instruction note dialog to let user know about how to use
+  _showInstructionGuideDialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return const MemeDialog(
+            title: 'Wanna know how to use?',
+            content: Text(
+                '\u2022 Enter some text on either label 1 or 2 or\n  both.\n\u2022 Drag and drop text on the image.',
+                style: TextStyles.memeDialogSmallText,
+                textAlign: TextAlign.left),
+            // Text('\n \u2022 Drag and drop text on the image')
           );
         });
   }
