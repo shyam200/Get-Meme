@@ -70,6 +70,9 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
           widget.bloc.add(PermissionGrantedEvent(image: _clippedImage));
         } else if (state is MemeGeneratorImageSavedSucessState) {
           _showSuccessDialog();
+        } else if (state is TechnicalErrorState) {
+          print('Technical error state');
+          _showTechnicalErrorDialog();
         }
       },
       // height: MediaQuery.of(context).size.height -
@@ -289,8 +292,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   }
 
   _onMemeSave() {
-    //widget.bloc.add(MemeGeneratorSaveImageEvent());
-    _showSuccessDialog();
+    widget.bloc.add(MemeGeneratorSaveImageEvent());
   }
 
   ///Method to take screenShot of the image from till the boundary
@@ -344,5 +346,20 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
         );
       },
     );
+  }
+
+  _showTechnicalErrorDialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return const MemeDialog(
+            content: Text(
+              'A technical error has occured please try again later.',
+              style: TextStyles.memeDialogText,
+            ),
+            title: 'Technical Error',
+            negativeButtonContent: 'Ok',
+          );
+        });
   }
 }

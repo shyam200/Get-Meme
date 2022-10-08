@@ -37,3 +37,8 @@ class PermissionGrantedState extends MemeGeneratorState {
   @override
   List<Object?> get props => [];
 }
+
+class TechnicalErrorState extends MemeGeneratorState {
+  @override
+  List<Object?> get props => [];
+}

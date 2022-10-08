@@ -53,22 +53,26 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
   }
 
   Stream<MemeGeneratorState> _saveImageToGallary(Image image) async* {
-    yield MemeGeneratorLoadingState();
-    //retreive application directory
-    final directoryPath = (await getApplicationDocumentsDirectory()).path;
-    ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
-    Uint8List pngBytes = byteData!.buffer.asUint8List();
-    //create a new file
-    File imageFile =
-        File('$directoryPath/screenshot${Random().nextInt(200)}.png');
-    imageFile.writeAsBytes(pngBytes);
-    print('saved result:- ${imageFile.path}');
+    try {
+      yield MemeGeneratorLoadingState();
 
-    final result = await ImageGallerySaver.saveImage(pngBytes,
-        name: "screenshot${Random().nextInt(200)}.png}");
-    print('$result');
-
-    yield MemeGeneratorImageSavedSucessState();
+      //retreive application directory
+      final directoryPath = (await getApplicationDocumentsDirectory()).path;
+      ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+      Uint8List pngBytes = byteData!.buffer.asUint8List();
+      //create a new file
+      File imageFile =
+          File('$directoryPath/screenshot${Random().nextInt(200)}.png');
+      //write png bytes into the file
+      imageFile.writeAsBytes(pngBytes);
+      // save file to gallery
+      await ImageGallerySaver.saveImage(pngBytes,
+          name: "screenshot${Random().nextInt(200)}.png}");
+      yield MemeGeneratorImageSavedSucessState();
+    } catch (exception, stackTrace) {
+      dev.log('$exception', stackTrace: stackTrace);
+      yield TechnicalErrorState();
+    }
   }
 
   Stream<MemeGeneratorState> _getGalleryPermission() async* {
