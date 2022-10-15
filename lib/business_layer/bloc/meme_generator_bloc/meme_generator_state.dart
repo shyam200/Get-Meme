@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:get_meme/data_layer/models/wishlist_model/wishlist_items_model.dart';
 
 import '../../../data_layer/models/meme_generator_model/meme_image_generator_model.dart';
 
@@ -39,6 +40,24 @@ class PermissionGrantedState extends MemeGeneratorState {
 }
 
 class TechnicalErrorState extends MemeGeneratorState {
+  @override
+  List<Object?> get props => [];
+}
+
+class DbDataReceivedState extends MemeGeneratorState {
+  final List<WishlistItemModel> itemsList;
+
+  DbDataReceivedState({required this.itemsList});
+  @override
+  List<Object?> get props => [itemsList];
+}
+
+class WishlistItemRemovedState extends MemeGeneratorState {
+  @override
+  List<Object?> get props => [];
+}
+
+class ItemAddedToWishlistState extends MemeGeneratorState {
   @override
   List<Object?> get props => [];
 }

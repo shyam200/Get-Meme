@@ -5,21 +5,27 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_meme/core/access_permissions/access_permissions_wrapper.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../core/access_permissions/access_permissions_wrapper.dart';
+import '../../../core/hive/hive_local_data_source.dart';
+import '../../../data_layer/models/wishlist_model/wishlist_items_model.dart';
 import '../../../data_layer/repositories/random_meme_repository.dart';
+import '../../../resources/hive_db/box_keys.dart';
 import 'meme_generator_event.dart';
 import 'meme_generator_state.dart';
 
 class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
   final RandomMememRepository repository;
   final AccessPermissionsWrapper accessPermissionsWrapper;
+  final HiveDbLocalDataSource hiveDbLocalDataSource;
 
   MemeGeneratorBloc(
-      {required this.repository, required this.accessPermissionsWrapper})
+      {required this.repository,
+      required this.accessPermissionsWrapper,
+      required this.hiveDbLocalDataSource})
       : super(MemeGeneratorLoadingState());
   @override
   Stream<MemeGeneratorState> mapEventToState(event) async* {
@@ -31,6 +37,20 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
       yield* _getGalleryPermission();
     } else if (event is PermissionGrantedEvent) {
       yield* _saveImageToGallary(event.image);
+    } else if (event is AddImageToFavouriteEvent) {
+      //Adding image to favourite list
+      addImageToFavourite(event.image, event.key);
+      yield ItemAddedToWishlistState();
+    } else if (event is FetchDbDataListEvent) {
+      yield MemeGeneratorLoadingState();
+      final List<WishlistItemModel> items = await hiveDbLocalDataSource
+          .getDataFromHiveDb<WishlistItemModel>(BoxKeys.memeSaveImageBoxKey);
+      yield DbDataReceivedState(itemsList: items);
+    } else if (event is RemoveFavouriteMemeEvent) {
+      yield MemeGeneratorLoadingState();
+      await hiveDbLocalDataSource.removeDataFromLocalHiveDb(
+          BoxKeys.memeSaveImageBoxKey, event.key);
+      yield WishlistItemRemovedState();
     }
   }
   //   on<MemeGeneratorEvent>((event, emit) async {
@@ -58,8 +78,7 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
 
       //retreive application directory
       final directoryPath = (await getApplicationDocumentsDirectory()).path;
-      ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
-      Uint8List pngBytes = byteData!.buffer.asUint8List();
+      Uint8List pngBytes = await getPngBytes(image);
       //create a new file
       File imageFile =
           File('$directoryPath/screenshot${Random().nextInt(200)}.png');
@@ -73,6 +92,24 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
       dev.log('$exception', stackTrace: stackTrace);
       yield TechnicalErrorState();
     }
+  }
+
+  //Method to return the png bytes of the given Image
+  Future<Uint8List> getPngBytes(Image? image) async {
+    ByteData? byteData = await image?.toByteData(format: ImageByteFormat.png);
+    Uint8List pngBytes = byteData!.buffer.asUint8List();
+    return pngBytes;
+  }
+
+  ///Method to add given image to favourite
+  addImageToFavourite(Image? image, String key) async {
+    Uint8List? pngBytes = await getPngBytes(image);
+
+    // WishlistModel _getWishlistItem = WishlistModel(imageList: imageList)
+    WishlistItemModel item =
+        WishlistItemModel(memeSaveImage: pngBytes, key: key);
+    hiveDbLocalDataSource.addDataToLocalHiveDb<WishlistItemModel>(
+        item, BoxKeys.memeSaveImageBoxKey, key);
   }
 
   Stream<MemeGeneratorState> _getGalleryPermission() async* {

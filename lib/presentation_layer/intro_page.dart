@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_meme/presentation_layer/more_menu/wishlist_page.dart';
 
 import 'meme_generator/meme_generator_page.dart';
 import 'random_meme_generator/random_meme_generator_page.dart';
@@ -100,7 +101,9 @@ class _IntroPageState extends State<IntroPage> {
           leading: const Icon(Icons.bookmark),
           title: const Text('Bookmarks'),
           onTap: () {
-            Navigator.of(context).pop();
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const WishlistPage()));
+            // Navigator.of(context).pop();
           },
         ),
         ListTile(

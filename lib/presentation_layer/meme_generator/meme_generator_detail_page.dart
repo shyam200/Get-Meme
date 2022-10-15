@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_meme/data_layer/models/wishlist_model/wishlist_items_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../business_layer/bloc/meme_generator_bloc/meme_generator_bloc.dart';
@@ -40,15 +41,16 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   late Offset headlineOffset; // = Offset.zero;
   late Offset descriptionOffset;
   bool _isBlackColor = false;
-  // late final ui.Image _clippedImage;
+  bool _isFavourite = false;
 
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       textFieldHeight = _textFieldKey.currentContext?.size?.height;
+      widget.bloc.add(FetchDbDataListEvent());
     });
-
     headlineOffset = Offset(dx, dy);
     descriptionOffset = Offset(dx + 10, dy + 10);
   }
@@ -58,7 +60,9 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
     return BlocConsumer<MemeGeneratorBloc, MemeGeneratorState>(
       bloc: widget.bloc, //_bloc,
       listener: (context, state) async {
-        if (state is PermissionTemporarilyDenied) {
+        if (state is DbDataReceivedState) {
+          await _isMemeAlreadyAdded(state.itemsList);
+        } else if (state is PermissionTemporarilyDenied) {
           //Show the response to user with dialog that image is saved successfully!
         } else if (state is PermissionPermanentlyDenied ||
             state is PermissionTemporarilyDenied) {
@@ -69,20 +73,28 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
           //save the image to gallery
           widget.bloc.add(PermissionGrantedEvent(image: _clippedImage));
         } else if (state is MemeGeneratorImageSavedSucessState) {
-          _showSuccessDialog();
+          _showSuccessDialog('Saved Successfully!');
         } else if (state is TechnicalErrorState) {
-          print('Technical error state');
           _showTechnicalErrorDialog();
+        } else if (state is WishlistItemRemovedState) {
+          _showSuccessDialog('Item Removed Successfully');
+        } else if (state is ItemAddedToWishlistState) {
+          _showSuccessDialog('Item Added Successfully!');
         }
       },
       // height: MediaQuery.of(context).size.height -
       //     2 * (textFieldHeight as num) -
       //     20,
       builder: (context, state) {
+        print('detailKey ${widget.key}');
         return Scaffold(
           appBar: AppBar(
             title: const Text('Create meme'),
             actions: [
+              IconButton(
+                  onPressed: _addToFavourite,
+                  icon: Icon(
+                      !_isFavourite ? Icons.favorite_border : Icons.favorite)),
               IconButton(onPressed: _onMemeSave, icon: const Icon(Icons.save)),
             ],
           ),
@@ -186,13 +198,6 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
                     headlineOffset.dy + details.delta.dy);
               });
             },
-            // onScaleUpdate: (scaleOffset) {
-            //   setState(() {
-            //     headlineOffset = Offset(
-            //         scaleOffset.focalPoint.dx, scaleOffset.focalPoint.dy);
-            //     _scaleFactor = scaleOffset.scale;
-            //   });
-            //  },
             child: Text(
               _isTextDropped
                   ? _textFieldOneController.text.isNotEmpty
@@ -332,15 +337,15 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
   }
 
   ///show meme saved [confirmation] dialog
-  _showSuccessDialog() {
+  _showSuccessDialog(String text) {
     showDialog(
       context: context,
       builder: (_) {
-        return const MemeDialog(
+        return MemeDialog(
           content: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Saved sucessfully!',
+              text,
               style: TextStyles.memeDialogText,
             ),
           ),
@@ -380,5 +385,35 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage> {
             // Text('\n \u2022 Drag and drop text on the image')
           );
         });
+  }
+
+//Method to add image to favourite
+  _addToFavourite() async {
+    if (!_isFavourite) {
+//setting icon
+      setState(() {
+        _isFavourite = !_isFavourite;
+      });
+      //adding to favourite
+      widget.bloc.add(AddImageToFavouriteEvent(
+          image: await _takeHeaderImageScreenShot(),
+          key: widget.key.toString()));
+    } else {
+      //Removing from bloc
+      setState(() {
+        _isFavourite = false;
+      });
+      widget.bloc.add(RemoveFavouriteMemeEvent(key: widget.key.toString()));
+    }
+  }
+
+  //To check if item is already present in wishlist
+  Future? _isMemeAlreadyAdded(List<WishlistItemModel> items) {
+    for (var element in items) {
+      if (element.key == widget.key.toString()) {
+        _isFavourite = true;
+      }
+    }
+    return null;
   }
 }

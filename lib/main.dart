@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'http_override_ssl_certificate.dart';
 import 'injection/injection_container.dart' as di;
 import 'presentation_layer/intro_page.dart';
+import 'resources/hive_db/hive_init.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await di.init();
+  await HiveInit.init();
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }

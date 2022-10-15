@@ -53,6 +53,9 @@ class _MemeGeneratorPageState extends State<MemeGeneratorPage> {
                                       builder: (_) => MemeGeneratorDetailPage(
                                             imgUrl: _imageList[index].imageUrl,
                                             bloc: _bloc,
+                                            key: Key(_imageList[index]
+                                                .id
+                                                .toString()),
                                           )));
                             },
                             child: ExtendedImage.network(
