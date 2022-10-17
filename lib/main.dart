@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get_meme/resources/string_keys.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'http_override_ssl_certificate.dart';
 import 'injection/injection_container.dart' as di;
@@ -23,8 +25,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isDarkTheme = false;
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,14 +42,20 @@ class _MyAppState extends State<MyApp> {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
-      themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+      themeMode: _isDarkTheme() ? ThemeMode.dark : ThemeMode.light,
       home: IntroPage(
-        function: () {
-          setState(() {
-            isDarkTheme = !isDarkTheme;
-          });
+        function: (bool newValue) async {
+          setState(() {});
+          await di
+              .di<SharedPreferences>()
+              .setBool(StringKeys.isDarkTheme, newValue);
         },
       ),
     );
+  }
+
+  bool _isDarkTheme() {
+    final _isDark = di.di<SharedPreferences>().getBool(StringKeys.isDarkTheme);
+    return _isDark != null && _isDark;
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_meme/injection/injection_container.dart';
 import 'package:get_meme/presentation_layer/more_menu/wishlist_page.dart';
+import 'package:get_meme/resources/string_keys.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'meme_generator/meme_generator_page.dart';
 import 'random_meme_generator/random_meme_generator_page.dart';
@@ -21,6 +24,8 @@ class _IntroPageState extends State<IntroPage> {
   void initState() {
     super.initState();
     _intoPageController = PageController(initialPage: 0);
+    isDarkModeEnabled =
+        di<SharedPreferences>().getBool(StringKeys.isDarkTheme) ?? false;
   }
 
   @override
@@ -130,7 +135,7 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   _onThemeChanged(bool newValue) {
-    widget.function();
+    widget.function(newValue);
     setState(() {
       isDarkModeEnabled = newValue;
     });

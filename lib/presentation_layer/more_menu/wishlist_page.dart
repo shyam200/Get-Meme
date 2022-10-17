@@ -30,7 +30,7 @@ class _WishlistPageState extends State<WishlistPage> with MemeCommonDialog {
   Widget build(BuildContext context) {
     return BlocConsumer<MoreMenuBloc, MoreMenuState>(
       bloc: _bloc,
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is WishlistLoadedState) {
           wishtlistItems = state.wishlistItems ?? [];
         } else if (state is WishlistItemRemovedSate) {

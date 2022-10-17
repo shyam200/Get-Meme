@@ -8,7 +8,6 @@ import 'more_menu_state.dart';
 
 class MoreMenuBloc extends Bloc<MoreMenuEvent, MoreMenuState> {
   final HiveDbLocalDataSource localDataSource;
-
   MoreMenuBloc({required this.localDataSource}) : super(MoreMenuLoadingState());
 
   // MoreMenuBloc() : super(MoreMenuLoadingState()) {

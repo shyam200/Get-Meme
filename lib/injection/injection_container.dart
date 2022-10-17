@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../business_layer/bloc/meme_generator_bloc/meme_generator_bloc.dart';
 import '../business_layer/bloc/more_menu_bloc/more_menu_bloc.dart';
@@ -38,6 +39,10 @@ Future<void> init() async {
 
   //! Utils
   di.registerLazySingleton<Dio>(() => Dio());
+
+  //! Utils - Shared Preferences
+  final sharedPreference = await SharedPreferences.getInstance();
+  di.registerLazySingleton<SharedPreferences>(() => sharedPreference);
 
   //!Access Permissions
   di.registerLazySingleton<AccessPermissionsWrapper>(
