@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../resources/styles/text_styles.dart';
 
-///Meme [common dialog] classs to build different types of dilog with content
+///Meme [common base dialog] classs to build different types of dilog with content
 class MemeDialog extends StatefulWidget {
   final String? title;
   final Widget content;
@@ -39,31 +39,38 @@ class _MemeDialogState extends State<MemeDialog> {
             children: [
               //Title of the dialog
               if (widget.title != null && widget.title!.isNotEmpty)
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0, top: 8.0),
-                    child: Text(
-                      widget.title!,
-                      textAlign: TextAlign.left,
-                      style: TextStyles.memeDialogHeadline,
-                    ),
-                  ),
-                ),
+                _buildTitle(),
               //widget draws as content of the dialog
-              Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 8.0),
-                  child: widget.content,
-                ),
-              ),
+              _buildContent(),
 
               //Bottom Buttons
               _buildBottomBar(context)
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Align _buildContent() {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+        child: widget.content,
+      ),
+    );
+  }
+
+  Align _buildTitle() {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10.0, top: 8.0),
+        child: Text(
+          widget.title!,
+          textAlign: TextAlign.left,
+          style: TextStyles.memeDialogHeadline,
         ),
       ),
     );
@@ -128,6 +135,32 @@ class _MemeDialogState extends State<MemeDialog> {
             ),
           ),
       ],
+    );
+  }
+}
+
+///class to handle different types of dialog inside the app
+///Used as a [mixin class]
+class MemeCommonDialog<T extends StatefulWidget> {
+  ///show meme [confirmation] dialog
+  showSuccessDialog({
+    required String text,
+    required BuildContext context,
+  }) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return MemeDialog(
+          content: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              text,
+              style: TextStyles.memeDialogText,
+            ),
+          ),
+          negativeButtonContent: 'Ok',
+        );
+      },
     );
   }
 }

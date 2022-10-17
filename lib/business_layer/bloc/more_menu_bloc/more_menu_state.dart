@@ -19,3 +19,11 @@ class WishlistLoadedState extends MoreMenuState {
   @override
   List<Object?> get props => [wishlistItems];
 }
+
+class WishlistItemRemovedSate extends MoreMenuState {
+  final String key;
+
+  WishlistItemRemovedSate(this.key);
+  @override
+  List<Object?> get props => [key];
+}

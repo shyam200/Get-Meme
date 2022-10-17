@@ -32,11 +32,11 @@ class PermissionGrantedEvent extends MemeGeneratorEvent {
   List<Object?> get props => [image];
 }
 
-class AddImageToFavouriteEvent extends MemeGeneratorEvent {
+class AddImageToWishlistEvent extends MemeGeneratorEvent {
   final String key;
   final Image image;
 
-  AddImageToFavouriteEvent({required this.key, required this.image});
+  AddImageToWishlistEvent({required this.key, required this.image});
   @override
   List<Object?> get props => [image, key];
 }
@@ -46,10 +46,10 @@ class FetchDbDataListEvent extends MemeGeneratorEvent {
   List<Object?> get props => [];
 }
 
-class RemoveFavouriteMemeEvent extends MemeGeneratorEvent {
+class RemoveItemFromWishlistEvent extends MemeGeneratorEvent {
   final String key;
 
-  RemoveFavouriteMemeEvent({required this.key});
+  RemoveItemFromWishlistEvent({required this.key});
   @override
   List<Object?> get props => [key];
 }

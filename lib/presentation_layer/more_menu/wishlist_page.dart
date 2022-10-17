@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_meme/resources/styles/text_styles.dart';
 
 import '../../business_layer/bloc/more_menu_bloc/more_menu_bloc.dart';
 import '../../business_layer/bloc/more_menu_bloc/more_menu_event.dart';
 import '../../business_layer/bloc/more_menu_bloc/more_menu_state.dart';
+import '../../core/external/meme_common_dialog.dart';
 import '../../data_layer/models/wishlist_model/wishlist_items_model.dart';
 import '../../injection/injection_container.dart';
+import '../../resources/styles/text_styles.dart';
 
 class WishlistPage extends StatefulWidget {
   const WishlistPage({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class WishlistPage extends StatefulWidget {
   State<WishlistPage> createState() => _WishlistPageState();
 }
 
-class _WishlistPageState extends State<WishlistPage> {
+class _WishlistPageState extends State<WishlistPage> with MemeCommonDialog {
   late final MoreMenuBloc _bloc;
   List<WishlistItemModel> wishtlistItems = [];
   @override
@@ -32,6 +33,15 @@ class _WishlistPageState extends State<WishlistPage> {
       listener: (context, state) {
         if (state is WishlistLoadedState) {
           wishtlistItems = state.wishlistItems ?? [];
+        } else if (state is WishlistItemRemovedSate) {
+          //final itemToRmove;
+          for (var item in wishtlistItems) {
+            if (item.key == state.key) {
+              wishtlistItems.remove(item);
+              break;
+            }
+          }
+          showSuccessDialog(text: 'Item remove successfully', context: context);
         }
       },
       builder: (context, state) {
@@ -49,21 +59,47 @@ class _WishlistPageState extends State<WishlistPage> {
                       ),
                     )
                   : wishtlistItems.isNotEmpty
-                      ? ListView.builder(
-                          itemCount: wishtlistItems.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                                height: 400,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                child: Image.memory(
-                                  wishtlistItems[index].memeSaveImage,
-                                  fit: BoxFit.cover,
-                                ));
-                          })
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: ListView.builder(
+                              itemCount: wishtlistItems.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  height: 400,
+                                  width: 400,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Stack(
+                                      fit: StackFit.passthrough,
+                                      children: [
+                                        Image.memory(
+                                          wishtlistItems[index].memeSaveImage,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        Positioned(
+                                            bottom: 35,
+                                            right: 30,
+                                            // height: 40,
+                                            child: InkWell(
+                                              onTap: () {
+                                                _bloc.add(
+                                                    RemoveSaveItemFromWishlistEvent(
+                                                        wishtlistItems[index]
+                                                            .key));
+                                              },
+                                              child: const Icon(
+                                                Icons.favorite_sharp,
+                                                size: 50,
+                                                color: Colors.white,
+                                              ),
+                                            ))
+                                      ]),
+                                );
+                              }),
+                        )
                       : Center(
                           child: Text(
-                            'Not added any item yet :)',
+                            'Not added any meme yet :)',
                             style: TextStyles.memeDialogHeadline
                                 .copyWith(color: Colors.white),
                           ),
@@ -72,4 +108,8 @@ class _WishlistPageState extends State<WishlistPage> {
       },
     );
   }
+
+  // _removeItemFromWishlist(String key) {
+
+  // }
 }

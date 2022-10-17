@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:equatable/equatable.dart';
 
 abstract class RandomMemeEvent extends Equatable {}
@@ -20,7 +22,24 @@ class ShareRandomMemeEvent extends RandomMemeEvent {
   List<Object?> get props => [imgUrl];
 }
 
-class AddToFavouriteMemeEvent extends RandomMemeEvent {
+class AddToWishlistMemeEvent extends RandomMemeEvent {
+  final Image image;
+  final String id;
+
+  AddToWishlistMemeEvent({required this.id, required this.image});
+  @override
+  List<Object?> get props => [id, image];
+}
+
+class RemoveItemFromWishlistEvent extends RandomMemeEvent {
+  final String key;
+
+  RemoveItemFromWishlistEvent(this.key);
+  @override
+  List<Object?> get props => [key];
+}
+
+class FetchDbDataEvent extends RandomMemeEvent {
   @override
   List<Object?> get props => [];
 }

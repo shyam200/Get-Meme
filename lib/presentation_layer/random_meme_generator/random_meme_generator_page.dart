@@ -50,8 +50,8 @@ class _RandomMemeGeneratorPageState extends State<RandomMemeGeneratorPage> {
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (_) => RandomMemeDetailPage(
-                                            title: _memeItem[index].imageUrl,
-                                            imageUrl: _memeItem[index].imageUrl,
+                                            randomMemeItemModel:
+                                                _memeItem[index],
                                           )));
                                 },
                                 child: Container(

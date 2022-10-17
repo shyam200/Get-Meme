@@ -37,7 +37,7 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
       yield* _getGalleryPermission();
     } else if (event is PermissionGrantedEvent) {
       yield* _saveImageToGallary(event.image);
-    } else if (event is AddImageToFavouriteEvent) {
+    } else if (event is AddImageToWishlistEvent) {
       //Adding image to favourite list
       addImageToFavourite(event.image, event.key);
       yield ItemAddedToWishlistState();
@@ -46,11 +46,8 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
       final List<WishlistItemModel> items = await hiveDbLocalDataSource
           .getDataFromHiveDb<WishlistItemModel>(BoxKeys.memeSaveImageBoxKey);
       yield DbDataReceivedState(itemsList: items);
-    } else if (event is RemoveFavouriteMemeEvent) {
-      yield MemeGeneratorLoadingState();
-      await hiveDbLocalDataSource.removeDataFromLocalHiveDb(
-          BoxKeys.memeSaveImageBoxKey, event.key);
-      yield WishlistItemRemovedState();
+    } else if (event is RemoveItemFromWishlistEvent) {
+      yield* _removeItemFromWishlist(event.key);
     }
   }
   //   on<MemeGeneratorEvent>((event, emit) async {
@@ -104,8 +101,6 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
   ///Method to add given image to favourite
   addImageToFavourite(Image? image, String key) async {
     Uint8List? pngBytes = await getPngBytes(image);
-
-    // WishlistModel _getWishlistItem = WishlistModel(imageList: imageList)
     WishlistItemModel item =
         WishlistItemModel(memeSaveImage: pngBytes, key: key);
     hiveDbLocalDataSource.addDataToLocalHiveDb<WishlistItemModel>(
@@ -132,5 +127,13 @@ class MemeGeneratorBloc extends Bloc<MemeGeneratorEvent, MemeGeneratorState> {
     } else if (permissionStatus.isGranted || permissionStatus.isLimited) {
       yield PermissionGrantedState();
     }
+  }
+
+  ///[Remove] item from [wishlist]
+  Stream<MemeGeneratorState> _removeItemFromWishlist(String key) async* {
+    yield MemeGeneratorLoadingState();
+    await hiveDbLocalDataSource.removeDataFromLocalHiveDb(
+        BoxKeys.memeSaveImageBoxKey, key);
+    yield WishlistItemRemovedState();
   }
 }

@@ -15,8 +15,15 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isDarkTheme = false;
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +31,25 @@ class MyApp extends StatelessWidget {
       title: 'Meme',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch().copyWith(
-        primary: const Color(0xFF00afc1),
-        secondary: const Color(0xFF0093AB),
-      )
-          // accentColor:
-          ),
-      home: const IntroPage(),
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: const Color(0xFF00afc1),
+          secondary: const Color(0xFF0093AB),
+        ),
+
+        //setting light theme mode
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+      home: IntroPage(
+        function: () {
+          setState(() {
+            isDarkTheme = !isDarkTheme;
+          });
+        },
+      ),
     );
   }
 }

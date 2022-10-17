@@ -5,7 +5,8 @@ import 'meme_generator/meme_generator_page.dart';
 import 'random_meme_generator/random_meme_generator_page.dart';
 
 class IntroPage extends StatefulWidget {
-  const IntroPage({Key? key}) : super(key: key);
+  final Function function;
+  const IntroPage({Key? key, required this.function}) : super(key: key);
 
   @override
   State<IntroPage> createState() => _IntroPageState();
@@ -129,6 +130,7 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   _onThemeChanged(bool newValue) {
+    widget.function();
     setState(() {
       isDarkModeEnabled = newValue;
     });

@@ -9,3 +9,11 @@ class GetWishlistItemsEvent extends MoreMenuEvent {
   @override
   List<Object?> get props => [];
 }
+
+class RemoveSaveItemFromWishlistEvent extends MoreMenuEvent {
+  final String key;
+
+  RemoveSaveItemFromWishlistEvent(this.key);
+  @override
+  List<Object?> get props => [key];
+}

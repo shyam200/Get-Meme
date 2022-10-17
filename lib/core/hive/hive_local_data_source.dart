@@ -14,7 +14,6 @@ class HiveDbLocalDataSource {
       final hiveBox = await hive.openBox(boxKey);
       // await hiveBox.put(typeId, dataObject);
       await hiveBox.put(key, dataObject);
-      print('successfully added');
     } catch (error, stackTrace) {
       log(error.toString(), stackTrace: stackTrace);
     }

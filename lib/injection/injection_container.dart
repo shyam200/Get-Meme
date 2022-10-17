@@ -20,7 +20,7 @@ Future<void> init() async {
 
   //!Bloc
   di.registerFactory<RandomMemeBloc>(
-      () => RandomMemeBloc(randomMememRepository: di()));
+      () => RandomMemeBloc(randomMememRepository: di(), localDb: di()));
 
   di.registerFactory<MemeGeneratorBloc>(() => MemeGeneratorBloc(
       repository: di(),

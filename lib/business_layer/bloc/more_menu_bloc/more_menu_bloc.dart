@@ -20,6 +20,8 @@ class MoreMenuBloc extends Bloc<MoreMenuEvent, MoreMenuState> {
   Stream<MoreMenuState> mapEventToState(MoreMenuEvent event) async* {
     if (event is GetWishlistItemsEvent) {
       yield* _getWishlistItems();
+    } else if (event is RemoveSaveItemFromWishlistEvent) {
+      yield* _removeItemFromWishlist(event.key);
     }
   }
 
@@ -30,5 +32,12 @@ class MoreMenuBloc extends Bloc<MoreMenuEvent, MoreMenuState> {
         .getDataFromHiveDb<WishlistItemModel>(BoxKeys.memeSaveImageBoxKey);
 
     yield WishlistLoadedState(wishlistItems: wishList);
+  }
+
+  Stream<MoreMenuState> _removeItemFromWishlist(String key) async* {
+    yield MoreMenuLoadingState();
+    await localDataSource.removeDataFromLocalHiveDb(
+        BoxKeys.memeSaveImageBoxKey, key);
+    yield WishlistItemRemovedSate(key);
   }
 }
