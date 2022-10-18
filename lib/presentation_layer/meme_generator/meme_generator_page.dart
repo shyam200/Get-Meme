@@ -38,41 +38,40 @@ class _MemeGeneratorPageState extends State<MemeGeneratorPage> {
       },
       builder: (context, state) {
         return state is MemeGeneratorLoadingState
-            ? const Center(child: CircularProgressIndicator())
-            : Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: ListView.builder(
-                    itemCount: _imageList.length,
-                    itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => MemeGeneratorDetailPage(
-                                            imgUrl: _imageList[index].imageUrl,
-                                            bloc: _bloc,
-                                            key: Key(_imageList[index]
-                                                .id
-                                                .toString()),
-                                          )));
-                            },
-                            child: ExtendedImage.network(
-                              _imageList[index].imageUrl,
-                              fit: BoxFit.contain,
-                              //  repeat: ImageRepeat.noRepeat,
-                              key: Key(_imageList[index].id +
-                                  UniqueKey().toString()),
-                              // errorBuilder: (context, obj, stackTrace) {
-                              //   print('$stackTrace');
-                              //   return Text('$stackTrace');
-                              // },
-                            ),
-                          ),
-                        )),
-              );
+            ? _buildProgressIndicator()
+            : _buildBody();
       },
     );
   }
+
+  Container _buildBody() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: ListView.builder(
+          itemCount: _imageList.length,
+          itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => MemeGeneratorDetailPage(
+                                  imgUrl: _imageList[index].imageUrl,
+                                  bloc: _bloc,
+                                  key: Key(_imageList[index].id.toString()),
+                                )));
+                  },
+                  child: ExtendedImage.network(
+                    _imageList[index].imageUrl,
+                    fit: BoxFit.contain,
+                    key: Key(_imageList[index].id + UniqueKey().toString()),
+                  ),
+                ),
+              )),
+    );
+  }
+
+  Center _buildProgressIndicator() =>
+      const Center(child: CircularProgressIndicator());
 }

@@ -4,6 +4,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_meme/resources/string_keys.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../business_layer/bloc/meme_generator_bloc/meme_generator_bloc.dart';
@@ -74,23 +76,26 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
           //save the image to gallery
           widget.bloc.add(PermissionGrantedEvent(image: _clippedImage));
         } else if (state is MemeGeneratorImageSavedSucessState) {
-          showSuccessDialog(text: 'Saved Successfully!', context: context);
+          showSuccessDialog(
+              text: StringKeys.savedConfirmationText, context: context);
         } else if (state is TechnicalErrorState) {
           _showTechnicalErrorDialog();
         } else if (state is WishlistItemRemovedState) {
           showSuccessDialog(
-              text: 'Item Removed Successfully', context: context);
+              text: StringKeys.removedConfirmationText, context: context);
         } else if (state is ItemAddedToWishlistState) {
-          showSuccessDialog(text: 'Item Added Successfully!', context: context);
+          showSuccessDialog(
+              text: StringKeys.memeAddedConfirmationText, context: context);
         }
       },
-      // height: MediaQuery.of(context).size.height -
-      //     2 * (textFieldHeight as num) -
-      //     20,
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Create meme'),
+            centerTitle: true,
+            title: const Text(
+              StringKeys.memeGeneratorDetailPageTitle,
+              style: TextStyles.appTitleText,
+            ),
             actions: [
               IconButton(
                   onPressed: _addToFavourite,
@@ -155,7 +160,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
       children: [
         const Padding(
           padding: EdgeInsets.only(left: 5.0),
-          child: Text('Wanna change text color to black ?'),
+          child: Text(StringKeys.colorChangeText),
         ),
         const Spacer(),
         _buildColorToggle(),
@@ -178,7 +183,8 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
         child: SizedBox(
             height: 400,
             child: DragTarget(
-              onWillAccept: (data) => data == 'Label 1' || data == 'Label 2',
+              onWillAccept: (data) =>
+                  data == StringKeys.label1 || data == StringKeys.label2,
               onAccept: (data) {
                 setState(() {
                   _isTextDropped = true;
@@ -223,18 +229,22 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
                     headlineOffset.dy + details.delta.dy);
               });
             },
-            child: Text(
-              _isTextDropped
-                  ? _textFieldOneController.text.isNotEmpty
-                      ? _textFieldOneController.text
-                      : ''
-                  : '',
-              softWrap: true,
-              style: TextStyle(
-                color: _isBlackColor ? Colors.black : Colors.white,
-                fontSize: 40.0,
-                fontWeight: FontWeight.bold,
-                overflow: TextOverflow.ellipsis,
+            child: SizedBox(
+              width: 365,
+              child: Text(
+                _isTextDropped
+                    ? _textFieldOneController.text.isNotEmpty
+                        ? _textFieldOneController.text
+                        : ''
+                    : '',
+                softWrap: true,
+                maxLines: 3,
+                style: GoogleFonts.unna(
+                  color: _isBlackColor ? Colors.black : Colors.white,
+                  fontSize: 40.0,
+                  fontWeight: FontWeight.bold,
+                  // overflow: TextOverflow.ellipsis,
+                ).copyWith(overflow: TextOverflow.ellipsis),
               ),
             ),
           ),
@@ -243,7 +253,7 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
     );
   }
 
-  Positioned _buildLabelTwo() {
+  _buildLabelTwo() {
     return Positioned(
       left: descriptionOffset.dx,
       top: descriptionOffset.dy,
@@ -254,13 +264,16 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
                 descriptionOffset.dy + details.delta.dy);
           });
         }),
-        child: Text(
-          _textFieldTwoController.text,
-          style: TextStyle(
-            color: _isBlackColor ? Colors.black : Colors.white,
-            fontSize: 40.0,
-            fontWeight: FontWeight.bold,
-            // fontFamily: 'Pacifico'
+        child: SizedBox(
+          width: 365,
+          child: Text(
+            _textFieldTwoController.text,
+            style: GoogleFonts.unna(
+              color: _isBlackColor ? Colors.black : Colors.white,
+              fontSize: 40.0,
+              fontWeight: FontWeight.bold,
+              // fontFamily: 'Pacifico'
+            ),
           ),
         ),
       ),
@@ -277,13 +290,13 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
             key: _textFieldKey,
             controller: _textFieldOneController,
             decoration: const InputDecoration(
-                label: Text('Label 1'),
+                label: Text(StringKeys.label1),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                   Radius.circular(8),
                 ))),
           ),
-          data: 'Label 1',
+          data: StringKeys.label1,
           feedback: Text(
             _textFieldOneController.text,
             style: const TextStyle(
@@ -301,13 +314,13 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
           child: TextField(
             controller: _textFieldTwoController,
             decoration: const InputDecoration(
-                label: Text('Label 2'),
+                label: Text(StringKeys.label2),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ))),
           ),
-          data: 'Label 2',
+          data: StringKeys.label2,
           feedback: Text(
             _textFieldTwoController.text,
             style: const TextStyle(
@@ -339,21 +352,21 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
         context: context,
         builder: (_) {
           return MemeDialog(
-            title: 'Error',
+            title: StringKeys.error,
             content: Column(
               children: [
                 Platform.isAndroid
                     ? const Text(
-                        'Please allow storage permission from settings',
+                        StringKeys.storagePermissionText,
                         style: TextStyles.memeDialogText,
                       )
                     : const Text(
-                        'Please allow photos permission from settings',
+                        StringKeys.photosPermissionText,
                         style: TextStyles.memeDialogText,
                       ),
               ],
             ),
-            positiveButtonContent: 'Ok',
+            positiveButtonContent: StringKeys.ok,
             positiveFuntion: () {
               openAppSettings();
             },
@@ -368,11 +381,11 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
         builder: (_) {
           return const MemeDialog(
             content: Text(
-              'A technical error has occured please try again later.',
+              StringKeys.technicalErrorText,
               style: TextStyles.memeDialogText,
             ),
-            title: 'Technical Error',
-            negativeButtonContent: 'Ok',
+            title: StringKeys.technicalError,
+            negativeButtonContent: StringKeys.ok,
           );
         });
   }
@@ -383,9 +396,8 @@ class _MemeGeneratorDetailPageState extends State<MemeGeneratorDetailPage>
         context: context,
         builder: (_) {
           return const MemeDialog(
-            title: 'Wanna know how to use?',
-            content: Text(
-                '\u2022 Enter some text on either label 1 or 2 or\n  both.\n\u2022 Drag and drop text on the image.',
+            title: StringKeys.infoDialogTitle,
+            content: Text(StringKeys.infoDialogText,
                 style: TextStyles.memeDialogSmallText,
                 textAlign: TextAlign.left),
             // Text('\n \u2022 Drag and drop text on the image')

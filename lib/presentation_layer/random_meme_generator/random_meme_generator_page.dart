@@ -46,29 +46,31 @@ class _RandomMemeGeneratorPageState extends State<RandomMemeGeneratorPage> {
                       itemCount: _memeItem.length,
                       itemBuilder: (context, index) {
                         return isValidImageUrl(_memeItem[index].imageUrl)
-                            ? InkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => RandomMemeDetailPage(
-                                            randomMemeItemModel:
-                                                _memeItem[index],
-                                          )));
-                                },
-                                child: Container(
-                                  height: 400,
-                                  width: 400,
-                                  padding: const EdgeInsets.only(
-                                      top: 20.0, bottom: 20.0),
-                                  child: Image.network(
-                                    _memeItem[index].imageUrl,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              )
+                            ? _buildImage(context, index)
                             : Container();
                       })),
         );
       },
+    );
+  }
+
+  InkWell _buildImage(BuildContext context, int index) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => RandomMemeDetailPage(
+                  randomMemeItemModel: _memeItem[index],
+                )));
+      },
+      child: Container(
+        height: 400,
+        width: 400,
+        padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+        child: Image.network(
+          _memeItem[index].imageUrl,
+          fit: BoxFit.fill,
+        ),
+      ),
     );
   }
 

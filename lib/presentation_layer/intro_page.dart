@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get_meme/injection/injection_container.dart';
-import 'package:get_meme/presentation_layer/more_menu/wishlist_page.dart';
-import 'package:get_meme/resources/string_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../injection/injection_container.dart';
+import '../resources/string_keys.dart';
+import '../resources/styles/text_styles.dart';
 import 'meme_generator/meme_generator_page.dart';
+import 'more_menu/wishlist_page.dart';
 import 'random_meme_generator/random_meme_generator_page.dart';
 
 class IntroPage extends StatefulWidget {
@@ -32,7 +33,12 @@ class _IntroPageState extends State<IntroPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meme App'),
+        title: const Text(
+          StringKeys.mainPageTitle,
+          style: TextStyles.appTitleText,
+          // GoogleFonts.robotoSerif(
+          //     fontSize: 20, fontWeight: FontWeight.bold),
+        ),
       ),
       drawer: _buildDrawer(),
       body: _buildBody(),
@@ -60,13 +66,13 @@ class _IntroPageState extends State<IntroPage> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
-              tooltip: 'Generate your own meme',
+              tooltip: StringKeys.generateMemeTootip,
               icon: Icon(Icons.design_services),
-              label: 'Generate meme'),
+              label: StringKeys.generateMeme),
           BottomNavigationBarItem(
-              tooltip: 'Choose a random meme',
+              tooltip: StringKeys.chooseMemelabel,
               icon: Icon(Icons.autorenew),
-              label: 'Random meme'),
+              label: StringKeys.randomMemelabel),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Theme.of(context).colorScheme.secondary,
@@ -81,44 +87,48 @@ class _IntroPageState extends State<IntroPage> {
         child: ListView(
       padding: EdgeInsets.zero,
       children: [
-        DrawerHeader(
-          child: const Text(
-            'More menu',
-            style: TextStyle(fontSize: 30.0, color: Colors.white),
-          ),
-          decoration:
-              BoxDecoration(color: Theme.of(context).colorScheme.secondary),
-        ),
-        ListTile(
-          leading: const Icon(Icons.settings),
-          title: const Text('Settings'),
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.ring_volume),
-          title: const Text('Subscription'),
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.bookmark),
-          title: const Text('Bookmarks'),
+        _buildDrawerHeader(),
+        _buildListItem(icon: Icons.settings, title: StringKeys.settings),
+        _buildListItem(icon: Icons.ring_volume, title: StringKeys.subscription),
+        _buildListItem(
+          icon: Icons.bookmark,
+          title: StringKeys.bookmarks,
           onTap: () {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (_) => const WishlistPage()));
             // Navigator.of(context).pop();
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.dark_mode),
-          title: const Text('Dark Theme'),
-          trailing: _buildThemeToggleSwitch(),
-        ),
+        _buildListItem(
+            icon: Icons.dark_mode,
+            title: StringKeys.darkTheme,
+            trailing: _buildThemeToggleSwitch()),
       ],
     ));
+  }
+
+  ListTile _buildListItem({
+    required IconData icon,
+    required String title,
+    Widget? trailing,
+    Function()? onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      trailing: trailing,
+      onTap: onTap ?? popDrawer,
+    );
+  }
+
+  DrawerHeader _buildDrawerHeader() {
+    return DrawerHeader(
+      child: const Text(
+        StringKeys.moreMenu,
+        style: TextStyle(fontSize: 30.0, color: Colors.white),
+      ),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
+    );
   }
 
   _buildThemeToggleSwitch() {
@@ -139,5 +149,9 @@ class _IntroPageState extends State<IntroPage> {
     setState(() {
       isDarkModeEnabled = newValue;
     });
+  }
+
+  void popDrawer() {
+    Navigator.of(context).pop();
   }
 }

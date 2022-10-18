@@ -11,6 +11,8 @@ import '../../core/external/meme_common_dialog.dart';
 import '../../data_layer/models/random_meme_generator_model/random_meme_items_model.dart';
 import '../../data_layer/models/wishlist_model/wishlist_items_model.dart';
 import '../../injection/injection_container.dart';
+import '../../resources/string_keys.dart';
+import '../../resources/styles/text_styles.dart';
 
 class RandomMemeDetailPage extends StatefulWidget {
   final RandomMemeItemModel randomMemeItemModel;
@@ -45,15 +47,21 @@ class _RandomMemeDetailPageState extends State<RandomMemeDetailPage>
         } else if (state is WishlistItemRemovedState) {
           _isFavourite = false;
           showSuccessDialog(
-              text: 'Item Removed successfully', context: context);
+              text: StringKeys.removedConfirmationText, context: context);
         } else if (state is ItemAddedToWishlistState) {
           _isFavourite = true;
-          showSuccessDialog(text: 'Item Added Successfully', context: context);
+          showSuccessDialog(
+              text: StringKeys.memeAddedConfirmationText, context: context);
         }
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(title: const Text('Detail Page')),
+          appBar: AppBar(
+              centerTitle: true,
+              title: const Text(
+                StringKeys.randomMemeDetailPageTitle,
+                style: TextStyles.appTitleText,
+              )),
           body: state is RandomMemeLoadingState
               ? const CircularProgressIndicator(
                   color: Colors.cyan,
@@ -77,30 +85,49 @@ class _RandomMemeDetailPageState extends State<RandomMemeDetailPage>
   }
 
   _buildHeaderImage() => SingleChildScrollView(
-      child: RepaintBoundary(
-          key: headerImageKey,
-          child: SizedBox(
-              height: 600,
-              child: Image.network(widget.randomMemeItemModel.imageUrl))));
+          child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(
+                width: 1, color: const Color.fromARGB(255, 0, 79, 118))),
+        child: RepaintBoundary(
+            key: headerImageKey,
+            child: SizedBox(
+                height: 400,
+                child: Image.network(widget.randomMemeItemModel.imageUrl))),
+      ));
 
   _buildButtons() => [
-        TextButton(
-          onPressed: _onAddToFavouriteButtonPressed,
-          child: Icon(
-            _isFavourite ? Icons.favorite : Icons.favorite_outline_outlined,
-            color: Colors.white,
+        Container(
+          height: 50,
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          // padding: const EdgeInsets.symmetric(vertical: 8.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Theme.of(context).colorScheme.secondary,
           ),
-          style: TextButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.secondary),
+          child: TextButton(
+            onPressed: _onAddToFavouriteButtonPressed,
+            child: Icon(
+              _isFavourite ? Icons.favorite : Icons.favorite_outline_outlined,
+              color: Colors.white,
+            ),
+          ),
         ),
-        TextButton(
-          onPressed: _onShareButtonPressed,
-          child: const Icon(
-            Icons.share,
-            color: Colors.white,
+        Container(
+          height: 50,
+          margin: const EdgeInsets.only(top: 5, bottom: 20),
+          // padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Theme.of(context).colorScheme.secondary,
           ),
-          style: TextButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.secondary),
+          child: TextButton(
+            onPressed: _onShareButtonPressed,
+            child: const Icon(
+              Icons.share,
+              color: Colors.white,
+            ),
+          ),
         )
       ];
 
