@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../injection/injection_container.dart';
@@ -61,7 +62,7 @@ class _IntroPageState extends State<IntroPage> {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white70,
-          border: Border.all(width: 0.5, color: Colors.grey)),
+          border: Border.all(width: 1, color: Colors.grey)),
       child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const [
@@ -115,7 +116,10 @@ class _IntroPageState extends State<IntroPage> {
   }) {
     return ListTile(
       leading: Icon(icon),
-      title: Text(title),
+      title: Text(
+        title,
+        style: TextStyles.drawerText,
+      ),
       trailing: trailing,
       onTap: onTap ?? popDrawer,
     );
@@ -123,10 +127,8 @@ class _IntroPageState extends State<IntroPage> {
 
   DrawerHeader _buildDrawerHeader() {
     return DrawerHeader(
-      child: const Text(
-        StringKeys.moreMenu,
-        style: TextStyle(fontSize: 30.0, color: Colors.white),
-      ),
+      padding: const EdgeInsets.only(top: 50.0, left: 20.0),
+      child: Text(StringKeys.moreMenu, style: TextStyles.drawerHeading),
       decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
     );
   }
